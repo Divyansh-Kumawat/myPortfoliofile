@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, Mail, ArrowRight, Github, Linkedin, Twitter } from 'lucide-react';
 import { personalData } from '../../data/portfolioData';
+import myPhoto from '../../assets/myphoto2.png';
 
 const Hero = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -110,7 +111,7 @@ const Hero = () => {
                             className="relative z-10 rounded-3xl overflow-hidden glass-card border-2 border-primary/30 shadow-[0_0_40px_rgba(102,252,241,0.3)] w-64 h-64 md:w-80 md:h-80 lg:w-[400px] lg:h-[400px]"
                         >
                             <img
-                                src="/src/assets/myphoto2.png"
+                                src={myPhoto}
                                 alt={personalData.name}
                                 className="w-full h-full object-cover object-top"
                                 onError={(e) => {
