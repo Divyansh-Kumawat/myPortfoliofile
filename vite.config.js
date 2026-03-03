@@ -4,4 +4,27 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+      },
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom'],
+          'animations': ['framer-motion'],
+          'ui': ['lucide-react', 'react-icons'],
+        }
+      }
+    }
+  },
+  server: {
+    port: 3000,
+    strictPort: false,
+  }
 })
