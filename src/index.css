@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dark-bg text-light-text font-sans antialiased overflow-x-hidden selection:bg-primary selection:text-dark-bg;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold text-light-heading tracking-tight;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-dark-surface/40 backdrop-blur-md border border-white/10 shadow-[0_4px_30px_#0000001a] rounded-2xl;
+  }
+
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-medium text-dark-bg bg-primary rounded-lg shadow-[0_0_15px_#66FCF180] transition-all duration-300 hover:shadow-[0_0_25px_#66FCF1CC] hover:-translate-y-1;
+  }
+
+  .btn-outline {
+    @apply relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-medium text-primary border-2 border-primary rounded-lg transition-all duration-300 hover:bg-primary/10 hover:shadow-[0_0_15px_#66FCF14D] hover:-translate-y-1;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B0C10;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #45A29E;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #66FCF1;
+}
+
+/* React Slick Slider Customizations */
+.slick-dots li button:before {
+  color: #c5c6c7 !important;
+  opacity: 0.3 !important;
+  font-size: 10px !important;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #66FCF1 !important;
+  opacity: 1 !important;
+  text-shadow: 0 0 10px rgba(102, 252, 241, 0.6);
+  font-size: 12px !important;
+}
+
+.projects-slider .slick-track {
+  display: flex !important;
+  gap: 0;
+}
+
+.projects-slider .slick-slide {
+  height: auto;
+}
+
+.projects-slider .slick-slide>div {
+  height: 100%;
+}
