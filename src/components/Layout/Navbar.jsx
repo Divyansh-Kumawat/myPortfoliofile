@@ -1,32 +1,41 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Moon, Sun, Menu, X } from 'lucide-react';
-import { personalData } from '../../data/portfolioData';
+import { Menu, X } from 'lucide-react';
+import Logo from '../UI/Logo';
 
-const Navbar = ({ theme, setTheme }) => {
+const navLinks = [
+    { name: 'About', href: '#about' },
+    { name: 'Skills', href: '#skills' },
+    { name: 'Projects', href: '#projects' },
+    { name: 'Journey', href: '#experience' },
+    { name: 'Insights', href: '#insights' },
+    { name: 'Talk', href: '#contact' },
+];
+
+const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [progress, setProgress] = useState(0);
 
     useEffect(() => {
         const handleScroll = () => {
+            const scrollable = document.documentElement.scrollHeight - window.innerHeight;
             setIsScrolled(window.scrollY > 50);
+            setProgress(scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0);
         };
-        window.addEventListener('scroll', handleScroll);
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const navLinks = [
-        { name: 'Home', href: '#home' },
-        { name: 'About', href: '#about' },
-        { name: 'Skills', href: '#skills' },
-        { name: 'Projects', href: '#projects' },
-        { name: 'Experience', href: '#experience' },
-        { name: 'Contact', href: '#contact' },
-    ];
+    // Lock body scroll while the fullscreen menu is open.
+    useEffect(() => {
+        document.body.style.overflow = menuOpen ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [menuOpen]);
 
     const handleScrollTo = (e, href) => {
         e.preventDefault();
-        setMobileMenuOpen(false);
+        setMenuOpen(false);
         const element = document.querySelector(href);
         if (element) {
             const top = element.getBoundingClientRect().top + window.scrollY - 80;
@@ -34,117 +43,92 @@ const Navbar = ({ theme, setTheme }) => {
         }
     };
 
-    const toggleTheme = () => {
-        setTheme(theme === 'dark' ? 'light' : 'dark');
-    };
-
     return (
-        <nav
-            className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-dark-bg/80 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.5)] py-3' : 'bg-transparent py-5'
-                }`}
-        >
-            <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-                {/* Desktop Nav - Left Links */}
-                <div className="hidden md:flex flex-1 justify-end pr-10">
-                    <ul className="flex items-center gap-6">
-                        {navLinks.slice(0, 3).map((link) => (
-                            <li key={link.name}>
-                                <a
-                                    href={link.href}
-                                    onClick={(e) => handleScrollTo(e, link.href)}
-                                    className="text-light-text hover:text-primary transition-colors duration-300 font-medium tracking-wide relative group text-sm uppercase"
-                                >
-                                    {link.name}
-                                    <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary group-hover:w-full transition-all duration-300"></span>
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-                {/* Center Logo */}
-                <a
-                    href="#home"
-                    onClick={(e) => handleScrollTo(e, '#home')}
-                    className="flex shrink-0 items-center justify-center transform hover:scale-105 transition-transform duration-300"
-                >
-                    <img
-                        src="/logo.webp"
-                        alt="Logo"
-                        className="h-12 w-auto md:h-16 rounded-full shadow-[0_0_15px_rgba(102,252,241,0.5)] border-2 border-primary/20"
-                    />
-                </a>
-
-                {/* Desktop Nav - Right Links & Theme Toggle */}
-                <div className="hidden md:flex flex-1 justify-start pl-10 items-center gap-8">
-                    <ul className="flex items-center gap-6">
-                        {navLinks.slice(3, 6).map((link) => (
-                            <li key={link.name}>
-                                <a
-                                    href={link.href}
-                                    onClick={(e) => handleScrollTo(e, link.href)}
-                                    className="text-light-text hover:text-primary transition-colors duration-300 font-medium tracking-wide relative group text-sm uppercase"
-                                >
-                                    {link.name}
-                                    <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary group-hover:w-full transition-all duration-300"></span>
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 ml-auto rounded-full hover:bg-dark-surface transition-colors text-primary"
-                        aria-label="Toggle Theme"
+        <>
+            <nav
+                className={`fixed top-0 z-40 w-full transition-all duration-300 ${isScrolled ? 'border-b border-rule bg-paper/85 backdrop-blur-md' : 'border-b border-transparent'
+                    }`}
+            >
+                <div className="flex items-center justify-between px-5 py-5 sm:px-6 md:px-10 lg:px-14">
+                    <a
+                        href="#home"
+                        onClick={(e) => handleScrollTo(e, '#home')}
+                        className="flex items-center gap-2.5 text-ink transition-colors duration-200 hover:text-term"
+                        aria-label="Back to top"
                     >
-                        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-                    </button>
-                </div>
+                        <Logo size={26} />
+                        <span className="font-pixel text-sm uppercase tracking-widest">DK</span>
+                    </a>
 
-                {/* Mobile Nav Toggle */}
-                <div className="md:hidden flex items-center gap-4">
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 rounded-full hover:bg-dark-surface transition-colors text-primary"
-                        aria-label="Toggle Theme"
-                    >
-                        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-                    </button>
-                    <button
-                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                        className="text-primary p-2"
-                    >
-                        {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-                    </button>
-                </div>
-            </div>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {mobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: '100vh' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="md:hidden absolute top-full left-0 w-full bg-dark-bg border-t border-dark-surface flex flex-col items-center justify-center gap-8 shadow-2xl overflow-hidden"
-                    >
-                        {navLinks.map((link, i) => (
-                            <motion.a
+                    <div className="hidden items-center gap-7 md:flex">
+                        {navLinks.map((link) => (
+                            <a
                                 key={link.name}
                                 href={link.href}
                                 onClick={(e) => handleScrollTo(e, link.href)}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.1 }}
-                                className="text-2xl font-semibold text-light-heading hover:text-primary transition-colors"
+                                className="font-pixel group relative text-sm uppercase tracking-widest text-ink-soft transition-colors duration-200 hover:text-term"
                             >
+                                <span className="text-term opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                                    /
+                                </span>
                                 {link.name}
-                            </motion.a>
+                            </a>
                         ))}
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </nav>
+                    </div>
+
+                    <button
+                        onClick={() => setMenuOpen(true)}
+                        className="p-2 text-ink transition-colors hover:text-term md:hidden"
+                        aria-label="Open menu"
+                    >
+                        <Menu size={24} />
+                    </button>
+                </div>
+
+                {/* Scroll progress */}
+                <div
+                    className="h-0.5 origin-left bg-term transition-transform duration-150"
+                    style={{ transform: `scaleX(${progress / 100})` }}
+                />
+            </nav>
+
+            {/* Fullscreen mobile menu */}
+            <div
+                className={`fixed inset-0 z-50 flex flex-col bg-paper transition-all duration-500 ease-out-expo md:hidden ${menuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+                    }`}
+            >
+                <div className="scanlines pointer-events-none absolute inset-0" />
+
+                <div className="relative flex items-center justify-between border-b border-rule px-6 py-5">
+                    <div className="flex items-center gap-2.5">
+                        <Logo size={26} />
+                        <span className="font-pixel text-sm uppercase tracking-widest">DK</span>
+                    </div>
+                    <button
+                        onClick={() => setMenuOpen(false)}
+                        className="p-2 text-ink transition-colors hover:text-term"
+                        aria-label="Close menu"
+                    >
+                        <X size={24} />
+                    </button>
+                </div>
+
+                <nav className="relative flex flex-1 flex-col items-center justify-center gap-7">
+                    {navLinks.map((link, i) => (
+                        <a
+                            key={link.name}
+                            href={link.href}
+                            onClick={(e) => handleScrollTo(e, link.href)}
+                            style={{ transitionDelay: menuOpen ? `${100 + i * 60}ms` : '0ms' }}
+                            className={`font-pixel text-2xl uppercase tracking-widest transition-all duration-500 ease-out-expo hover:text-term ${menuOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                                }`}
+                        >
+                            <span className="text-term">/</span>{link.name}
+                        </a>
+                    ))}
+                </nav>
+            </div>
+        </>
     );
 };
 

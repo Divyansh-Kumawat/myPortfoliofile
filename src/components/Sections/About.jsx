@@ -1,29 +1,26 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { personalData } from '../../data/portfolioData';
 import { Code, Server, Zap, Layout, Brain, LineChart } from 'lucide-react';
+import { personalData } from '../../data/portfolioData';
+import SectionHeader from '../UI/SectionHeader';
+// Imported (not string paths) so Vite fingerprints them into the production build.
+import one from '../../assets/one.webp';
+import two from '../../assets/two.webp';
+import three from '../../assets/three.webp';
+import four from '../../assets/four.webp';
+
+const aboutImages = [one, two, three, four];
+
+const attributes = [
+    { icon: Layout, title: 'Frontend', desc: 'Crafting beautiful UI/UX with React & Tailwind.' },
+    { icon: Server, title: 'Backend', desc: 'Building scalable APIs with Node.js & Express.' },
+    { icon: Zap, title: 'Cloud', desc: 'Deploying and scaling with AWS.' },
+    { icon: Code, title: 'Optimization', desc: 'Improving performance and SEO.' },
+    { icon: Brain, title: 'Machine Learning', desc: 'Working on AI/ML projects.' },
+    { icon: LineChart, title: 'Data Science', desc: 'Working on Data Science projects.' },
+];
 
 const About = () => {
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.2 }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-    };
-
-    const aboutImages = [
-        "/src/assets/one.webp",
-        "/src/assets/two.webp",
-        "/src/assets/three.webp",
-        "/src/assets/four.webp"
-    ];
-
     const [currentImg, setCurrentImg] = useState(0);
 
     useEffect(() => {
@@ -33,92 +30,85 @@ const About = () => {
         return () => clearInterval(interval);
     }, []);
 
-    const attributes = [
-        { icon: <Layout className="text-primary w-6 h-6" />, title: "Frontend", desc: "Crafting beautiful UI/UX with React & Tailwind." },
-        { icon: <Server className="text-primary w-6 h-6" />, title: "Backend", desc: "Building scalable APIs with Node.js & Express." },
-        { icon: <Zap className="text-primary w-6 h-6" />, title: "Cloud", desc: "Deploying and scaling with AWS." },
-        { icon: <Code className="text-primary w-6 h-6" />, title: "Optimization", desc: "Improving performance and SEO." },
-        { icon: <Brain className="text-primary w-6 h-6" />, title: "Machine Learning", desc: "Working on AI/ML projects." },
-        { icon: <LineChart className="text-primary w-6 h-6" />, title: "Data Science", desc: "Working on Data Science projects." },
-    ];
-
     return (
-        <section id="about" className="py-24 relative overflow-hidden">
-            <div className="container mx-auto px-6 md:px-12 relative z-10">
-                <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
-                    variants={containerVariants}
-                    className="flex flex-col lg:flex-row gap-16 items-center"
-                >
-                    {/* Left side text with Background Slideshow */}
-                    <div className="w-full lg:w-1/2 relative rounded-3xl overflow-hidden min-h-[500px] flex items-center shadow-[0_0_30px_rgba(102,252,241,0.15)]">
+        <section id="about" className="relative bg-paper/85 py-24 px-5 backdrop-blur-sm sm:px-6 md:px-10 lg:px-14">
+            <SectionHeader
+                index="01"
+                label="about"
+                title="WHO'S"
+                pixelWord="BEHIND IT"
+                lede="A Computer Science student with a strong interest in full-stack web development, cloud technologies, and problem-solving."
+            />
 
-                        {/* Background Slideshow */}
-                        <div className="absolute inset-0 z-0">
-                            <AnimatePresence mode="wait">
-                                <motion.img
-                                    key={currentImg}
-                                    src={aboutImages[currentImg]}
-                                    initial={{ opacity: 0, scale: 1.05 }}
-                                    animate={{ opacity: 0.4, scale: 1 }} // Low opacity to keep text readable
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 1.2 }}
-                                    className="w-full h-full object-cover object-center"
-                                    alt="About Me Background"
-                                />
-                            </AnimatePresence>
-                            {/* Gradient Overlay for Text Readability */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-dark-bg/90 via-dark-bg/70 to-dark-bg/40"></div>
-                        </div>
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
 
-                        {/* Content */}
-                        <div className="relative z-10 p-8 md:p-12 w-full">
-                            <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold mb-8 flex items-center gap-4 text-light-heading">
-                                <span className="w-12 h-1 bg-primary"></span>
-                                About Me
-                            </motion.h2>
-
-                            <motion.div variants={itemVariants} className="space-y-6 text-lg text-white/90 leading-relaxed font-medium">
-                                <p>
-                                    {personalData.bio}
-                                </p>
-                                <p>
-                                    I am a Computer Science student with a strong interest in full-stack web development, cloud technologies, and problem-solving.
-                                    I enjoy building user-friendly applications, optimizing performance, and continuously learning new technologies.
-                                </p>
-                                <p>
-                                    My goal is to work as a software developer where I can contribute to impactful projects and continuously grow my technical skills.
-                                </p>
-                            </motion.div>
-                        </div>
+                {/* Bio, framed as a terminal window */}
+                <div className="border border-rule bg-surface">
+                    <div className="flex items-center gap-1.5 border-b border-rule bg-bone px-4 py-2.5">
+                        <span className="h-2 w-2 rounded-full bg-term" />
+                        <span className="h-2 w-2 rounded-full bg-ink/15" />
+                        <span className="h-2 w-2 rounded-full bg-ink/15" />
+                        <span className="font-pixel ml-2 text-[10px] uppercase tracking-widest text-ink-mute">
+                            cat about.md
+                        </span>
                     </div>
 
-                    {/* Right side attributes grid */}
-                    <div className="w-full lg:w-1/2">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            {attributes.map((attr, index) => (
-                                <motion.div
-                                    key={index}
-                                    variants={itemVariants}
-                                    className="glass-card p-6 border-l-4 border-l-primary hover:-translate-y-2 transition-transform duration-300"
-                                >
-                                    <div className="w-12 h-12 rounded-full bg-dark-bg flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(102,252,241,0.2)]">
-                                        {attr.icon}
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-2 text-light-heading">{attr.title}</h3>
-                                    <p className="text-light-text/70">{attr.desc}</p>
-                                </motion.div>
-                            ))}
-                        </div>
+                    <div className="relative h-44 overflow-hidden border-b border-rule">
+                        <AnimatePresence mode="wait">
+                            <motion.img
+                                key={currentImg}
+                                src={aboutImages[currentImg]}
+                                initial={{ opacity: 0, scale: 1.06 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 1.2, ease: 'easeOut' }}
+                                className="h-full w-full object-cover"
+                                alt=""
+                                aria-hidden="true"
+                            />
+                        </AnimatePresence>
+                        <div className="pointer-events-none absolute inset-0 bg-term/20 mix-blend-multiply" />
+                        <div className="scanlines pointer-events-none absolute inset-0" />
                     </div>
-                </motion.div>
+
+                    <div className="space-y-4 p-7 text-sm leading-relaxed text-ink-soft">
+                        <p>{personalData.bio}</p>
+                        <p>
+                            I enjoy building user-friendly applications, optimizing performance, and continuously
+                            learning new technologies.
+                        </p>
+                        <p>
+                            My goal is to work as a software developer where I can contribute to impactful projects
+                            and continuously grow my technical skills.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Capability grid */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {attributes.map(({ icon: Icon, title, desc }, index) => (
+                        <motion.div
+                            key={title}
+                            initial={{ opacity: 0, y: 18 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            className="brackets panel panel-glow group p-6"
+                        >
+                            <div className="flex items-start justify-between">
+                                <span className="grid h-10 w-10 place-items-center border border-rule bg-term-tint text-term transition-colors duration-300 group-hover:bg-term group-hover:text-white">
+                                    <Icon size={18} strokeWidth={1.75} />
+                                </span>
+                                <span className="font-pixel text-xs text-ink-mute">
+                                    {String(index + 1).padStart(2, '0')}
+                                </span>
+                            </div>
+                            <h3 className="mt-5 text-base font-bold uppercase tracking-wide">{title}</h3>
+                            <p className="mt-2 text-sm leading-relaxed text-ink-soft">{desc}</p>
+                        </motion.div>
+                    ))}
+                </div>
             </div>
-
-            {/* Decorative gradient lines */}
-            <div className="absolute top-1/2 right-0 w-1/3 h-[1px] bg-gradient-to-l from-primary to-transparent opacity-30"></div>
-            <div className="absolute top-1/4 left-0 w-1/4 h-[1px] bg-gradient-to-r from-primary to-transparent opacity-30"></div>
         </section>
     );
 };

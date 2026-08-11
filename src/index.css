@@ -1,12 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-dark-bg text-light-text font-sans antialiased overflow-x-hidden selection:bg-primary selection:text-dark-bg;
+    @apply bg-paper font-sans text-ink antialiased overflow-x-hidden;
+  }
+
+  ::selection {
+    background-color: #ff5f1f;
+    color: #000000;
   }
 
   h1,
@@ -15,65 +22,189 @@
   h4,
   h5,
   h6 {
-    @apply font-bold text-light-heading tracking-tight;
+    @apply font-semibold tracking-tight text-ink;
   }
 }
 
 @layer components {
-  .glass-card {
-    @apply bg-dark-surface/40 backdrop-blur-md border border-white/10 shadow-[0_4px_30px_#0000001a] rounded-2xl;
+
+  .font-pixel {
+    font-family: 'basis33', ui-monospace, SFMono-Regular, monospace;
   }
 
+  /* ── Terminal chrome ───────────────────────────────────────── */
+
+  /* Command-line label: `> whoami` in the pixel face. */
+  .prompt::before {
+    content: '> ';
+    color: #ff5f1f;
+  }
+
+  .cursor::after {
+    content: '_';
+    @apply animate-blink text-term;
+  }
+
+  /* Targeting-reticle corners, drawn with a single gradient set. */
+  .brackets {
+    position: relative;
+  }
+
+  .brackets::before,
+  .brackets::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: #ff5f1f;
+    border-style: solid;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+
+  .brackets::before {
+    top: -1px;
+    left: -1px;
+    border-width: 2px 0 0 2px;
+  }
+
+  .brackets::after {
+    right: -1px;
+    bottom: -1px;
+    border-width: 0 2px 2px 0;
+  }
+
+  .brackets:hover::before,
+  .brackets:hover::after {
+    opacity: 1;
+  }
+
+  /* ── Surfaces ──────────────────────────────────────────────── */
+
+  .panel,
+  .glass-card {
+    @apply relative border border-rule bg-surface transition-all duration-300;
+  }
+
+  .panel-glow:hover {
+    @apply border-term;
+    box-shadow: 4px 4px 0 0 rgba(255, 95, 31, 0.16);
+  }
+
+  /* ── Controls ──────────────────────────────────────────────── */
+
   .btn-primary {
-    @apply relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-medium text-dark-bg bg-primary rounded-lg shadow-[0_0_15px_#66FCF180] transition-all duration-300 hover:shadow-[0_0_25px_#66FCF1CC] hover:-translate-y-1;
+    @apply inline-flex items-center justify-center gap-3 border-2 border-term bg-term px-7 py-3 text-sm font-semibold uppercase tracking-wider text-white transition-all duration-200;
+  }
+
+  .btn-primary:hover {
+    @apply bg-paper text-term;
+    box-shadow: 4px 4px 0 0 #ff5f1f;
+    transform: translate(-2px, -2px);
   }
 
   .btn-outline {
-    @apply relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-medium text-primary border-2 border-primary rounded-lg transition-all duration-300 hover:bg-primary/10 hover:shadow-[0_0_15px_#66FCF14D] hover:-translate-y-1;
+    @apply inline-flex items-center justify-center gap-3 border-2 border-ink bg-paper px-7 py-3 text-sm font-semibold uppercase tracking-wider text-ink transition-all duration-200;
+  }
+
+  .btn-outline:hover {
+    box-shadow: 4px 4px 0 0 #f2f2f0;
+    transform: translate(-2px, -2px);
+  }
+
+  .section-label {
+    @apply font-pixel text-base uppercase tracking-widest text-term;
+  }
+
+  .hairline {
+    @apply h-px w-full bg-rule;
+  }
+
+  /* Outlined display type — used for the oversized name behind the avatar. */
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(242, 242, 240, 0.14);
+  }
+
+  .text-outline-term {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255, 95, 31, 0.55);
+  }
+
+  /* The keyed render ends at the shoulder line; fade it so the crop edge
+     dissolves into the page instead of reading as a hard rule. */
+  .avatar-fade {
+    -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 99%);
+    mask-image: linear-gradient(to bottom, #000 82%, transparent 99%);
+  }
+
+  /* Warm technical grid. */
+  .grid-overlay {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  /* CRT scanlines, barely there so body copy stays crisp. */
+  .scanlines {
+    background-image: repeating-linear-gradient(to bottom,
+        rgba(255, 255, 255, 0.03) 0px,
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 4px);
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B0C10;
+  background: #0a0a0a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #45A29E;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #66FCF1;
+  background: #ff5f1f;
+  border: 2px solid #0a0a0a;
 }
 
 /* React Slick Slider Customizations */
 .slick-dots li button:before {
-  color: #c5c6c7 !important;
-  opacity: 0.3 !important;
-  font-size: 10px !important;
+  color: #f2f2f0 !important;
+  opacity: 0.2 !important;
+  font-size: 8px !important;
 }
 
 .slick-dots li.slick-active button:before {
-  color: #66FCF1 !important;
+  color: #ff5f1f !important;
   opacity: 1 !important;
-  text-shadow: 0 0 10px rgba(102, 252, 241, 0.6);
-  font-size: 12px !important;
+  font-size: 10px !important;
 }
 
-.projects-slider .slick-track {
-  display: flex !important;
-  gap: 0;
-}
-
-.projects-slider .slick-slide {
+/* No `display: flex` on the track — it lets slick's px-width slides shrink,
+   which leaks a sliver of the neighbouring slide past the list's overflow clip. */
+.slick-slide {
   height: auto;
 }
 
 .projects-slider .slick-slide>div {
   height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
