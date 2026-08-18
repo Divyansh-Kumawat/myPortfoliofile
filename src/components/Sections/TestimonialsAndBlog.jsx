@@ -4,7 +4,7 @@ import { testimonials, blogPosts } from '../../data/portfolioData';
 import SectionHeader from '../UI/SectionHeader';
 
 const TestimonialsAndBlog = () => (
-    <section id="insights" className="relative bg-paper/85 py-24 px-5 backdrop-blur-sm sm:px-6 md:px-10 lg:px-14">
+    <section id="insights" className="relative border-t border-white/5 py-24 px-5 sm:px-6 md:px-10 lg:px-14">
         <SectionHeader
             index="05"
             label="insights"

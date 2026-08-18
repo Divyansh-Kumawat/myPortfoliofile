@@ -84,7 +84,7 @@ const Hero = () => {
                         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                         className="col-span-2 lg:col-span-1"
                     >
-                        <div className="brackets border border-rule bg-surface/85 p-4 backdrop-blur-sm">
+                        <div className="brackets border border-rule bg-surface/70 p-4 backdrop-blur-md">
                             <div className="mb-3 flex items-center gap-1.5">
                                 <span className="h-2 w-2 rounded-full bg-term" />
                                 <span className="h-2 w-2 rounded-full bg-ink/20" />
@@ -112,7 +112,7 @@ const Hero = () => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label={label}
-                                    className="border border-rule bg-surface p-2 text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-term hover:text-term hover:shadow-[3px_3px_0_0_#FF5F1F]"
+                                    className="border border-rule bg-surface/70 p-2 text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-term hover:text-term hover:shadow-[3px_3px_0_0_#FF5F1F]"
                                 >
                                     <Icon size={15} strokeWidth={1.75} />
                                 </a>

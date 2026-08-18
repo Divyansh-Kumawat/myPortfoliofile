@@ -84,7 +84,7 @@
 
   .panel,
   .glass-card {
-    @apply relative border border-rule bg-surface transition-all duration-300;
+    @apply relative border border-rule bg-surface/70 transition-all duration-300;
   }
 
   .panel-glow:hover {
@@ -157,6 +157,358 @@
   }
 }
 
+/* ── Animated wordmark ──────────────────────────────────────────
+   Layers are absolutely stacked on the base copy, so every copy must
+   inherit identical metrics to stay in register. */
+.name-mark {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  /* basis33 has a 0.5 cap-height ratio, so a full 1em line box is mostly air.
+     Tightening it keeps the navbar compact while the caps stay large. */
+  line-height: 0.62;
+}
+
+.name-mark__base {
+  position: relative;
+  z-index: 2;
+}
+
+.name-mark__layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* A bright band clipped to the glyphs, travelling across the word.
+   `alternate` is what sends it back right-to-left on the return trip. */
+.name-mark__sweep {
+  z-index: 3;
+  background-image: linear-gradient(100deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.9) 47%,
+      #ff5f1f 50%,
+      rgba(255, 255, 255, 0.9) 53%,
+      transparent 60%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: code-sweep 3.4s ease-in-out infinite alternate;
+}
+
+@keyframes code-sweep {
+  from {
+    background-position: 130% 0;
+  }
+
+  to {
+    background-position: -30% 0;
+  }
+}
+
+/* Chromatic split. Both layers idle at opacity 0 and only fire during the
+   short windows late in the cycle, so the glitch reads as an occasional
+   burst rather than constant noise. */
+/* 2.6s loop with two burst windows, so a glitch lands roughly every 1.3s. */
+.name-mark__glitch-a {
+  z-index: 1;
+  color: #ff5f1f;
+  animation: glitch-a 2.6s steps(1) infinite;
+}
+
+.name-mark__glitch-b {
+  z-index: 1;
+  color: #ffffff;
+  animation: glitch-b 2.6s steps(1) infinite;
+}
+
+@keyframes glitch-a {
+
+  0%,
+  22%,
+  36%,
+  62%,
+  78%,
+  100% {
+    opacity: 0;
+    transform: translate(0);
+    clip-path: inset(0 0 0 0);
+  }
+
+  23% {
+    opacity: 1;
+    transform: translate(-3px, 1px);
+    clip-path: inset(8% 0 68% 0);
+  }
+
+  28% {
+    opacity: 1;
+    transform: translate(3px, -1px);
+    clip-path: inset(58% 0 22% 0);
+  }
+
+  32% {
+    opacity: 1;
+    transform: translate(-2px, 0);
+    clip-path: inset(34% 0 46% 0);
+  }
+
+  63% {
+    opacity: 1;
+    transform: translate(3px, -1px);
+    clip-path: inset(20% 0 60% 0);
+  }
+
+  69% {
+    opacity: 1;
+    transform: translate(-3px, 1px);
+    clip-path: inset(64% 0 14% 0);
+  }
+
+  74% {
+    opacity: 1;
+    transform: translate(2px, 1px);
+    clip-path: inset(44% 0 36% 0);
+  }
+}
+
+@keyframes glitch-b {
+
+  0%,
+  23%,
+  37%,
+  63%,
+  79%,
+  100% {
+    opacity: 0;
+    transform: translate(0);
+    clip-path: inset(0 0 0 0);
+  }
+
+  24% {
+    opacity: 1;
+    transform: translate(3px, -1px);
+    clip-path: inset(70% 0 12% 0);
+  }
+
+  29% {
+    opacity: 1;
+    transform: translate(-3px, 1px);
+    clip-path: inset(20% 0 58% 0);
+  }
+
+  33% {
+    opacity: 1;
+    transform: translate(2px, 1px);
+    clip-path: inset(46% 0 34% 0);
+  }
+
+  64% {
+    opacity: 1;
+    transform: translate(-3px, 1px);
+    clip-path: inset(50% 0 30% 0);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translate(3px, 0);
+    clip-path: inset(12% 0 72% 0);
+  }
+
+  75% {
+    opacity: 1;
+    transform: translate(-2px, -1px);
+    clip-path: inset(30% 0 52% 0);
+  }
+}
+
+/* ── Connector streams ──────────────────────────────────────────
+   pathLength="100" on each path normalises the dash pattern to percent,
+   so one dash definition travels correctly along paths of different
+   real lengths. Offset 100 -> 0 runs start (hand) to end (card). */
+.stream-pulse {
+  stroke-dasharray: 7 93;
+  animation-name: stream-flow;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes stream-flow {
+  from {
+    stroke-dashoffset: 100;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.stream-node {
+  animation: stream-node 3.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes stream-node {
+
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.7);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+/* Opacity only — anything that changed geometry would force the turbulence
+   filter to re-rasterise on every frame. */
+.wisp-breathe {
+  animation: wisp-breathe 7s ease-in-out infinite;
+}
+
+@keyframes wisp-breathe {
+
+  0%,
+  100% {
+    opacity: 0.38;
+  }
+
+  50% {
+    opacity: 0.62;
+  }
+}
+
+/* Cards drift independently; delay/duration are set per card inline. */
+.card-float {
+  animation-name: card-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes card-float {
+
+  0%,
+  100% {
+    transform: translateY(-5px);
+  }
+
+  50% {
+    transform: translateY(7px);
+  }
+}
+
+/* Hexagonal icon frame: an outer clipped plate with a slightly inset inner
+   plate, since clip-path cannot take a border. */
+.hex-frame,
+.hex-inner {
+  clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+}
+
+/* ── Cursor-follow photo reveal ─────────────────────────────────
+   Both layers share identical box + object-fit, so they stay in register;
+   only the mask moves. --mx/--my are written by the component. */
+.photo-reveal {
+  position: relative;
+  --mx: 58%;
+  --my: 26%;
+}
+
+.photo-reveal__img {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.photo-reveal__lens {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  /* Feathered edge — a hard circle would read as a cut-out rather than a
+     lens. Radius is generous enough to cover the glasses in one pass. */
+  -webkit-mask-image: radial-gradient(circle 150px at var(--mx) var(--my),
+      #000 42%, rgba(0, 0, 0, 0.45) 72%, transparent 100%);
+  mask-image: radial-gradient(circle 150px at var(--mx) var(--my),
+      #000 42%, rgba(0, 0, 0, 0.45) 72%, transparent 100%);
+}
+
+.photo-reveal.is-revealing .photo-reveal__lens {
+  opacity: 1;
+}
+
+/* Faint lens ring, so the interaction reads as deliberate. */
+.photo-reveal__ring {
+  position: absolute;
+  left: var(--mx);
+  top: var(--my);
+  height: 300px;
+  width: 300px;
+  margin: -150px 0 0 -150px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 95, 31, 0.28);
+  box-shadow: 0 0 40px -10px rgba(255, 95, 31, 0.35) inset;
+  opacity: 0;
+  transform: scale(0.75);
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.photo-reveal.is-revealing .photo-reveal__ring {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Floating tech tiles ────────────────────────────────────────
+   Drift and breathe run on two nested elements at deliberately
+   mismatched durations, so the combined motion keeps evolving instead
+   of looping in visible lockstep. Durations and negative delays are
+   assigned per tile in the component. */
+.tech-float {
+  animation-name: tech-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes tech-float {
+
+  0%,
+  100% {
+    transform: translateY(6px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.tech-pulse {
+  animation-name: tech-pulse;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes tech-pulse {
+
+  0%,
+  100% {
+    transform: scale(0.86);
+  }
+
+  50% {
+    transform: scale(1.14);
+  }
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
@@ -192,6 +544,51 @@
 
 .projects-slider .slick-slide>div {
   height: 100%;
+}
+
+/* ── Center-focus 3D carousel ───────────────────────────────────
+   `centerMode` gives the middle slide a .slick-center class; slick swaps
+   it mid-transition, so animating transform here makes the incoming card
+   grow and the outgoing ones recede on their own. */
+.projects-slider .slick-list {
+  perspective: 1600px;
+  /* Room for the lifted centre card and its shadow, which would otherwise
+     be clipped by the list's overflow. */
+  padding-top: 42px !important;
+  padding-bottom: 52px !important;
+}
+
+.projects-slider .slick-track {
+  transform-style: preserve-3d;
+}
+
+.projects-slider .slick-slide {
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease;
+  transform: scale(0.84);
+  opacity: 0.45;
+  z-index: 1;
+}
+
+.projects-slider .slick-center {
+  transform: scale(1.06);
+  opacity: 1;
+  z-index: 10;
+}
+
+/* Side cards angle in toward the centre for the pop-out depth cue.
+   Falls back to a plain scale-down where :has() is unsupported. */
+.projects-slider .slick-center+.slick-slide {
+  transform: scale(0.84) rotateY(-16deg) translateZ(-70px);
+}
+
+.projects-slider .slick-slide:has(+ .slick-center) {
+  transform: scale(0.84) rotateY(16deg) translateZ(-70px);
+}
+
+/* Only the focused card is interactive, so a half-hidden neighbour cannot
+   swallow clicks meant for the centre. */
+.projects-slider .slick-slide:not(.slick-center) .project-card {
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

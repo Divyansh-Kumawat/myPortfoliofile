@@ -12,7 +12,7 @@ const skillIconSlugs = {
     "Docker": "docker", "Kubernetes": "kubernetes",
 };
 
-const categories = [
+const categoryDefs = [
     { title: 'languages', items: technicalSkills.languages },
     { title: 'frontend', items: technicalSkills.frontend },
     { title: 'ai_ml', items: technicalSkills.ai_ml },
@@ -21,6 +21,15 @@ const categories = [
     { title: 'cloud', items: technicalSkills.cloud },
 ];
 
+// A running index across every category, so animation phases keep varying
+// instead of resetting at each heading.
+const categories = categoryDefs.reduce((acc, c) => {
+    const prev = acc[acc.length - 1];
+    acc.push({ ...c, offset: prev ? prev.offset + prev.items.length : 0 });
+    return acc;
+}, []);
+
+// Small inline icon, still used by the "other skills" list below.
 const getSkillLogo = (skillName) => {
     const slug = skillIconSlugs[skillName];
     if (!slug) return null;
@@ -35,25 +44,56 @@ const getSkillLogo = (skillName) => {
     );
 };
 
-const TechCategory = ({ title, items }) => (
-    <div className="mb-7">
-        <h4 className="font-pixel prompt mb-3 text-sm uppercase tracking-widest text-term">{title}</h4>
-        <div className="flex flex-wrap gap-2">
-            {items.map((item) => (
+// Drift and breathe are given co-prime-ish periods and a negative delay, so
+// tiles start mid-cycle rather than all snapping from rest together.
+const TechTile = ({ name, index }) => {
+    const slug = skillIconSlugs[name];
+    const floatDur = 5.2 + (index % 5) * 0.63;
+    const pulseDur = 3.9 + (index % 4) * 0.71;
+    const offset = (index % 7) * 0.8;
+
+    return (
+        <span
+            title={name}
+            className="tech-float group inline-flex items-center justify-center"
+            style={{ animationDuration: `${floatDur}s`, animationDelay: `-${offset}s` }}
+        >
+            {slug ? (
+                <img
+                    src={`https://skillicons.dev/icons?i=${slug}`}
+                    alt={name}
+                    loading="lazy"
+                    className="tech-pulse h-12 w-12 object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.6)] transition-[filter] duration-300 group-hover:drop-shadow-[0_0_16px_rgba(255,95,31,0.85)] sm:h-14 sm:w-14"
+                    style={{ animationDuration: `${pulseDur}s`, animationDelay: `-${offset / 2}s` }}
+                />
+            ) : (
+                // No mark exists for these, so the name carries the tile rather
+                // than the skill vanishing from the page.
                 <span
-                    key={item}
-                    className="group flex cursor-default items-center gap-2 whitespace-nowrap border border-rule bg-surface px-2.5 py-1.5 text-xs text-ink-soft transition-all duration-200 hover:-translate-y-0.5 hover:border-term hover:text-ink hover:shadow-[3px_3px_0_0_#FF5F1F]"
+                    className="tech-pulse font-pixel grid h-12 w-12 place-items-center border border-term/40 bg-term-tint px-1 text-center text-[9px] uppercase leading-tight text-term transition-colors duration-300 group-hover:border-term sm:h-14 sm:w-14 sm:text-[10px]"
+                    style={{ animationDuration: `${pulseDur}s`, animationDelay: `-${offset / 2}s` }}
                 >
-                    {getSkillLogo(item)}
-                    {item}
+                    {name}
                 </span>
+            )}
+        </span>
+    );
+};
+
+const TechCategory = ({ title, items, offset = 0 }) => (
+    <div className="mb-8">
+        <h4 className="font-pixel prompt mb-4 text-sm uppercase tracking-widest text-term">{title}</h4>
+        {/* Generous gaps leave room for the drift without tiles colliding. */}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+            {items.map((item, i) => (
+                <TechTile key={item} name={item} index={offset + i} />
             ))}
         </div>
     </div>
 );
 
 const Skills = () => (
-    <section id="skills" className="relative bg-bone/85 py-24 px-5 backdrop-blur-sm sm:px-6 md:px-10 lg:px-14">
+    <section id="skills" className="relative border-t border-white/5 bg-white/[0.018] py-24 px-5 sm:px-6 md:px-10 lg:px-14">
         <SectionHeader
             index="02"
             label="skills"
@@ -83,7 +123,7 @@ const Skills = () => (
                                 </span>
                                 <span className="font-pixel text-sm text-term">{skill.level}%</span>
                             </div>
-                            <div className="h-2 w-full border border-rule bg-surface p-[2px]">
+                            <div className="h-2 w-full border border-rule bg-black/40 p-[2px]">
                                 <motion.div
                                     className="h-full origin-left bg-term"
                                     initial={{ scaleX: 0 }}
@@ -100,7 +140,7 @@ const Skills = () => (
 
             {/* Technologies & tools */}
             <motion.div
-                className="border border-rule bg-surface p-7"
+                className="border border-rule bg-surface/70 p-7"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}

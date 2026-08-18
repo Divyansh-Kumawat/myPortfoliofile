@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import Logo from '../UI/Logo';
+import NameMark from '../UI/NameMark';
+import { personalData } from '../../data/portfolioData';
 
 const navLinks = [
     { name: 'About', href: '#about' },
@@ -10,6 +12,10 @@ const navLinks = [
     { name: 'Insights', href: '#insights' },
     { name: 'Talk', href: '#contact' },
 ];
+
+// Steps back down at md, where the desktop links appear and compete for width.
+const lockupSize =
+    'text-[20px] tracking-[0.06em] sm:text-[26px] sm:tracking-[0.08em] md:text-[20px] md:tracking-[0.06em] lg:text-[38px] lg:tracking-[0.12em] xl:text-[48px] xl:tracking-[0.14em]';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -53,20 +59,23 @@ const Navbar = () => {
                     <a
                         href="#home"
                         onClick={(e) => handleScrollTo(e, '#home')}
-                        className="flex items-center gap-2.5 text-ink transition-colors duration-200 hover:text-term"
+                        className={`font-pixel flex items-center gap-[0.32em] uppercase text-ink transition-colors duration-200 hover:text-term ${lockupSize}`}
                         aria-label="Back to top"
                     >
-                        <Logo size={26} />
-                        <span className="font-pixel text-sm uppercase tracking-widest">DK</span>
+                        {/* 0.5em == basis33's cap height, so the marks always match
+                            the letterforms exactly at every breakpoint. */}
+                        <Logo className="h-[0.5em] w-[0.5em] shrink-0" />
+                        <NameMark name={personalData.name.toUpperCase()} />
+                        <Logo className="h-[0.5em] w-[0.5em] shrink-0" />
                     </a>
 
-                    <div className="hidden items-center gap-7 md:flex">
+                    <div className="hidden items-center gap-4 md:flex lg:gap-7">
                         {navLinks.map((link) => (
                             <a
                                 key={link.name}
                                 href={link.href}
                                 onClick={(e) => handleScrollTo(e, link.href)}
-                                className="font-pixel group relative text-sm uppercase tracking-widest text-ink-soft transition-colors duration-200 hover:text-term"
+                                className="font-pixel group relative text-xs uppercase tracking-widest text-ink-soft transition-colors duration-200 hover:text-term lg:text-sm"
                             >
                                 <span className="text-term opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                                     /
@@ -100,9 +109,10 @@ const Navbar = () => {
                 <div className="scanlines pointer-events-none absolute inset-0" />
 
                 <div className="relative flex items-center justify-between border-b border-rule px-6 py-5">
-                    <div className="flex items-center gap-2.5">
-                        <Logo size={26} />
-                        <span className="font-pixel text-sm uppercase tracking-widest">DK</span>
+                    <div className={`font-pixel flex items-center gap-[0.32em] uppercase ${lockupSize}`}>
+                        <Logo className="h-[0.5em] w-[0.5em] shrink-0" />
+                        <NameMark name={personalData.name.toUpperCase()} />
+                        <Logo className="h-[0.5em] w-[0.5em] shrink-0" />
                     </div>
                     <button
                         onClick={() => setMenuOpen(false)}

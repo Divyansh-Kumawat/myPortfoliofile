@@ -12,7 +12,7 @@ const Footer = () => {
     const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
     return (
-        <footer className="relative z-10 border-t-2 border-ink bg-paper px-5 pb-8 pt-14 sm:px-6 md:px-10 lg:px-14">
+        <footer className="relative z-10 border-t-2 border-ink bg-paper/35 px-5 pb-8 pt-14 backdrop-blur-md sm:px-6 md:px-10 lg:px-14">
             <div className="mb-10 flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
 
                 <div>
@@ -36,7 +36,7 @@ const Footer = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={label}
-                            className="border border-rule bg-surface p-3 text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-term hover:text-term hover:shadow-[3px_3px_0_0_#FF5F1F]"
+                            className="border border-rule bg-surface/70 p-3 text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-term hover:text-term hover:shadow-[3px_3px_0_0_#FF5F1F]"
                         >
                             <Icon size={17} strokeWidth={1.75} />
                         </a>

@@ -4,7 +4,7 @@ import { experiences, certifications } from '../../data/portfolioData';
 import SectionHeader from '../UI/SectionHeader';
 
 const Experience = () => (
-    <section id="experience" className="relative bg-bone/85 py-24 px-5 backdrop-blur-sm sm:px-6 md:px-10 lg:px-14">
+    <section id="experience" className="relative border-t border-white/5 bg-white/[0.018] py-24 px-5 sm:px-6 md:px-10 lg:px-14">
         <SectionHeader
             index="04"
             label="journey"

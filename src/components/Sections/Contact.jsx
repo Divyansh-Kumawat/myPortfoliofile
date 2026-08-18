@@ -5,7 +5,7 @@ import { personalData } from '../../data/portfolioData';
 import SectionHeader from '../UI/SectionHeader';
 
 const inputClasses =
-    "w-full border border-rule bg-surface px-4 py-3 text-sm text-ink transition-colors duration-200 placeholder:text-ink-mute/60 focus:border-term focus:outline-none focus:ring-2 focus:ring-term/20";
+    "w-full border border-rule bg-black/40 px-4 py-3 text-sm text-ink transition-colors duration-200 placeholder:text-ink-mute/60 focus:border-term focus:outline-none focus:ring-2 focus:ring-term/20";
 
 const Contact = () => {
     const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
@@ -31,7 +31,7 @@ const Contact = () => {
     ];
 
     return (
-        <section id="contact" className="relative bg-bone/85 py-24 px-5 backdrop-blur-sm sm:px-6 md:px-10 lg:px-14">
+        <section id="contact" className="relative border-t border-white/5 bg-white/[0.018] py-24 px-5 sm:px-6 md:px-10 lg:px-14">
             <SectionHeader
                 index="06"
                 label="talk"
@@ -74,7 +74,7 @@ const Contact = () => {
 
                 {/* Form */}
                 <motion.div
-                    className="border border-rule bg-surface p-7 md:p-9 lg:col-span-2"
+                    className="border border-rule bg-surface/70 p-7 md:p-9 lg:col-span-2"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.65, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
