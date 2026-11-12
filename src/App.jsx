@@ -22,7 +22,9 @@ function App() {
 
       <Navbar />
 
-      <main className="relative z-10 w-full overflow-hidden">
+      {/* overflow-x-clip, not overflow-hidden: hidden makes <main> a scroll
+          container, which silently disables position:sticky in the hero. */}
+      <main className="relative z-10 w-full overflow-x-clip">
         <Hero />
         <Marquee items={TICKER} />
         <About />

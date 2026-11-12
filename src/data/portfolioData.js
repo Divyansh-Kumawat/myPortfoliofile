@@ -11,7 +11,7 @@ export const personalData = {
     email: "divyanshmcp@gmail.com",
     phone: "+91 9024858973",
     location: "India",
-    resumeUrl: "https://drive.google.com/file/d/1M9LzzS7f3gac7kQKunoO4DdWlUWFcP_y/view?usp=sharing", // Direct download link
+    resumeUrl: "https://drive.google.com/file/d/1czBmzY_zh2AqgG8BGURDr1JwvXAsYzRZ/view?usp=sharing", // Direct download link
     social: {
         github: "https://github.com/Divyansh-Kumawat",
         linkedin: "https://www.linkedin.com/in/divyansh-kumawat",

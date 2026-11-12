@@ -1,9 +1,17 @@
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { Play, Download, Github, Linkedin, Twitter } from 'lucide-react';
 import { personalData, projects, skills, certifications } from '../../data/portfolioData';
 import Typewriter from '../UI/Typewriter';
 // Cropped + background-keyed from the supplied render, so it sits on paper.
 import avatar from '../../assets/avatar-cut.png';
+// Zoom-out chain for the scroll sequence, segmented from their baked
+// backgrounds (u2net) and shipped as WebP-with-alpha. Ordered by measured
+// head size: waist (tightest) -> neck -> knees -> full body.
+import stageWaist from '../../assets/waist-cut.webp';
+import stageNeck from '../../assets/neck-cut.webp';
+import stageKnees from '../../assets/knees-cut.webp';
+import fullBody from '../../assets/fullimage-cut.webp';
 
 const services = [
     'Full Stack Development (MERN)',
@@ -46,7 +54,45 @@ const Avatar = ({ className = '' }) => (
     </div>
 );
 
+// One intermediate framing in the zoom-out chain. Fades in over [r0,r1],
+// holds, fades out over [r2,r3], while continuously shrinking — so each
+// handoff overlaps a stage that is still in motion and reads as one pull-back.
+const MidStage = ({ progress, src, range }) => {
+    const [r0, r1, r2, r3] = range;
+    const opacity = useTransform(progress, [r0, r1, r2, r3], [0, 1, 1, 0]);
+    const scale = useTransform(progress, [r0, r3], [1.22, 0.9]);
+    return (
+        <motion.div
+            style={{ opacity, scale, transformOrigin: 'top center' }}
+            className="absolute inset-x-0 bottom-0 flex justify-center"
+        >
+            <img
+                src={src}
+                alt=""
+                aria-hidden="true"
+                className="h-[84vh] w-auto object-contain drop-shadow-[0_18px_40px_rgba(255,95,31,0.22)]"
+            />
+        </motion.div>
+    );
+};
+
 const Hero = () => {
+    const heroRef = useRef(null);
+    const prefersReduced = useReducedMotion();
+
+    // 0 at the top of the page, 1 when the tall section has fully scrolled by.
+    // The inner viewport is sticky, so this progress scrubs the sequence.
+    const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end end'] });
+
+    // Phase A — zoom-out through the framing chain, every layer shrinking
+    // while the next fades in, so it reads as one continuous camera move.
+    const faceOpacity = useTransform(scrollYProgress, [0, 0.08, 0.16], [1, 1, 0]);
+    const faceScale = useTransform(scrollYProgress, [0, 0.16], [1, 0.6]);
+    const bodyOpacity = useTransform(scrollYProgress, [0.52, 0.6], [0, 1]);
+    const bodyScale = useTransform(scrollYProgress, [0.52, 0.68], [1.14, 1]);
+    // Phase B — one full turn, scrubbed by the remaining scroll.
+    const bodyRotate = useTransform(scrollYProgress, [0.68, 0.96], [0, 360]);
+
     const scrollToProjects = (e) => {
         e.preventDefault();
         const el = document.querySelector('#projects');
@@ -54,7 +100,14 @@ const Hero = () => {
     };
 
     return (
-        <section id="home" className="relative min-h-screen w-full overflow-hidden">
+        <section
+            id="home"
+            ref={heroRef}
+            className={`relative w-full ${prefersReduced ? '' : 'lg:h-[300vh]'}`}
+        >
+            {/* Pinned viewport: stays on screen while the tall section scrolls
+                past, which is what turns scroll distance into animation time. */}
+            <div className={`relative min-h-screen w-full overflow-hidden ${prefersReduced ? '' : 'lg:sticky lg:top-0 lg:h-screen'}`}>
 
             {/* ── Oversized name, sitting behind the avatar ── */}
             <div className="pointer-events-none absolute inset-x-0 top-[16%] z-0 flex flex-col items-center justify-center sm:top-[13%]">
@@ -66,11 +119,49 @@ const Hero = () => {
                 </h1>
             </div>
 
-            {/* ── Avatar: absolute and dominant from lg up, where the headline
-                   sits in its own column and never collides with it. ── */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center lg:flex">
-                <Avatar className="h-[82vh]" />
-            </div>
+            {/* ── Avatar stage: absolute and dominant from lg up, where the
+                   headline sits in its own column and never collides with it. ── */}
+            {prefersReduced ? (
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center lg:flex">
+                    <Avatar className="h-[82vh]" />
+                </div>
+            ) : (
+                <div
+                    className="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden items-end justify-center lg:flex"
+                    style={{ perspective: '1400px' }}
+                >
+                    {/* Final layer: full body, revealed last, then spun. */}
+                    <motion.div
+                        style={{
+                            opacity: bodyOpacity,
+                            scale: bodyScale,
+                            rotateY: bodyRotate,
+                            transformOrigin: 'top center',
+                        }}
+                        className="relative"
+                    >
+                        <img
+                            src={fullBody}
+                            alt=""
+                            aria-hidden="true"
+                            className="h-[86vh] w-auto object-contain drop-shadow-[0_18px_40px_rgba(255,95,31,0.25)]"
+                        />
+                    </motion.div>
+
+                    {/* Intermediate framings, tightest first. */}
+                    <MidStage progress={scrollYProgress} src={stageKnees} range={[0.38, 0.46, 0.52, 0.6]} />
+                    <MidStage progress={scrollYProgress} src={stageNeck} range={[0.24, 0.32, 0.38, 0.46]} />
+                    <MidStage progress={scrollYProgress} src={stageWaist} range={[0.08, 0.16, 0.24, 0.32]} />
+
+                    {/* Face layer on top, handing over as the scroll starts. */}
+                    <motion.div
+                        style={{ opacity: faceOpacity, scale: faceScale }}
+                        className="absolute inset-x-0 bottom-0 flex justify-center"
+                    >
+                        <Avatar className="h-[82vh]" />
+                    </motion.div>
+                </div>
+            )}
 
             {/* ── Foreground UI ── */}
             <div className="relative z-20 flex min-h-screen flex-col px-5 pt-24 sm:px-6 md:px-10 lg:px-14">
@@ -224,6 +315,7 @@ const Hero = () => {
                         </p>
                     </div>
                 </div>
+            </div>
             </div>
         </section>
     );
