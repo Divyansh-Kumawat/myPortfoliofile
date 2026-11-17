@@ -1,6 +1,9 @@
-import helperLogo from '../assets/Helperlogo.jpeg';
-import auranotesLogo from '../assets/auranotes.jpeg';
-import cognivueLogo from '../assets/cognivue.jpeg';
+// `new URL(..., import.meta.url)` instead of `import x from '*.jpeg'`: Vite still
+// bundles the images, and plain Node (the /api functions read this file for the
+// AI assistant's knowledge) can load the module without choking on a .jpeg.
+const helperLogo = new URL('../assets/Helperlogo.jpeg', import.meta.url).href;
+const auranotesLogo = new URL('../assets/auranotes.jpeg', import.meta.url).href;
+const cognivueLogo = new URL('../assets/cognivue.jpeg', import.meta.url).href;
 
 export const personalData = {
     name: "Divyansh Kumawat",
@@ -151,6 +154,21 @@ export const technicalSkills = {
 export const experiences = [
     {
         id: 1,
+        title: "AI/ML Engineer",
+        company: "Bio Loom Solutions Pvt. Ltd. (Ask First)",
+        period: "June 2026 - Present",
+        description: "Building LangGraph-based AI agents for Ask First, an AI healthcare platform, including a conversational nutrition agent and an improved patient-context retrieval pipeline.",
+        // Not rendered on the page; gives the portfolio AI assistant fuller detail.
+        highlights: [
+            "On-site internship working on Ask First, an AI-powered healthcare platform, contributing to production-grade Generative AI and agentic workflows for patient and doctor interactions.",
+            "Developed and optimized LangGraph-based AI agents with agent orchestration, tool calling, state management and prompt management to support reliable healthcare workflows.",
+            "Developed an end-to-end AI nutrition agent integrated into the chat application, letting users add, update, edit and delete meal entries through conversation while keeping accurate daily meal and nutrition logs.",
+            "Improved the medical report engine and the patient-context retrieval pipeline, optimizing how relevant patient history and clinical information are retrieved and provided to AI models for more context-aware, reliable responses.",
+        ],
+        type: "experience"
+    },
+    {
+        id: 2,
         title: "Full Stack Developer",
         company: "Best Jaipur- Tech Digital Marketing Company",
         period: "15th May - 5th July 2025",
@@ -158,7 +176,7 @@ export const experiences = [
         type: "experience"
     },
     {
-        id: 2,
+        id: 3,
         title: "Btech in Computer Science",
         company: "Vellore Institute of Technology, Vellore",
         period: "2022 - ongoing",
@@ -166,7 +184,7 @@ export const experiences = [
         type: "education"
     },
     {
-        id: 3,
+        id: 4,
         title: "Higher Secondary Education",
         company: "St. Xavier's School, Nevta",
         period: "2020-2022",

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { skills, technicalSkills } from '../../data/portfolioData';
+import { technicalSkills } from '../../data/portfolioData';
 import SectionHeader from '../UI/SectionHeader';
+import AiConsole from '../AI/AiConsole';
 
 // skillicons.dev slugs, keyed by the display names used in portfolioData.
 const skillIconSlugs = {
@@ -104,39 +105,20 @@ const Skills = () => (
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
 
-            {/* Core competencies, as terminal load bars */}
-            <div>
-                <h3 className="mb-7 text-xl font-bold uppercase tracking-wide">Core Competencies</h3>
-                <div className="space-y-4">
-                    {skills.map((skill, index) => (
-                        <motion.div
-                            key={skill.name}
-                            initial={{ opacity: 0, x: -14 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.45, delay: index * 0.05 }}
-                            viewport={{ once: true, amount: 0.4 }}
-                            className="group"
-                        >
-                            <div className="mb-1.5 flex items-baseline justify-between">
-                                <span className="font-pixel text-sm uppercase tracking-wide text-ink transition-colors group-hover:text-term">
-                                    {skill.name}
-                                </span>
-                                <span className="font-pixel text-sm text-term">{skill.level}%</span>
-                            </div>
-                            <div className="h-2 w-full border border-rule bg-black/40 p-[2px]">
-                                <motion.div
-                                    className="h-full origin-left bg-term"
-                                    initial={{ scaleX: 0 }}
-                                    whileInView={{ scaleX: skill.level / 100 }}
-                                    style={{ originX: 0 }}
-                                    transition={{ duration: 1, delay: 0.15 + index * 0.05, ease: [0.16, 1, 0.3, 1] }}
-                                    viewport={{ once: true }}
-                                />
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
+            {/* AI console: ask the portfolio, or match a job description */}
+            <motion.div
+                className="flex min-w-0 flex-col"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+                viewport={{ once: true, amount: 0.15 }}
+            >
+                <h3 className="mb-2 text-xl font-bold uppercase tracking-wide">Ask My Portfolio</h3>
+                <p className="mb-6 text-sm text-ink-soft">
+                    Skip the skill bars. Ask an AI that knows my work, or paste a job description to see how I fit.
+                </p>
+                <AiConsole />
+            </motion.div>
 
             {/* Technologies & tools */}
             <motion.div
