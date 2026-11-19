@@ -42,7 +42,7 @@ export default defineConfig(({ mode }) => {
   // Load server-only secrets from .env for the dev API. They are not VITE_
   // prefixed, so they never reach the browser bundle.
   const env = loadEnv(mode, process.cwd(), '')
-  for (const key of ['GROQ_API_KEY', 'GROQ_MODEL']) {
+  for (const key of ['GROQ_API_KEY', 'GROQ_MODEL', 'RESEND_API_KEY', 'CONTACT_TO_EMAIL', 'CONTACT_FROM_EMAIL']) {
     if (env[key] && !process.env[key]) process.env[key] = env[key]
   }
 
